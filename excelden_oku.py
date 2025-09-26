@@ -1,8 +1,7 @@
-from os import name
 from PyQt5.QtWidgets import QPushButton, QTableWidgetItem
 from PyQt5.QtWidgets import qApp
 from PyQt5.QtWidgets import QTableWidget
-from openpyxl import load_workbook
+from openpyxl import load_workbook,Workbook
 from openpyxl.utils import get_column_letter
 from functools import partial
 from paramikoo import connect_and_run
@@ -15,6 +14,12 @@ from PyQt5.QtCore import Qt
 
 def load_excel_to_table(table_widget, file_name):
 
+    if not os.path.exists(file_name):
+            workbook = Workbook()
+            sheet = workbook.active
+            sheet.append(["Switch Adı", "Marka", "Model", "Lokasyon", "IP", "UserName", "Password"])# İstersen buraya varsayılan başlık ekleyebilirsin
+            workbook.save(file_name)
+        
     workbook = load_workbook(filename=file_name)
     sheet = workbook.active
 
@@ -52,7 +57,7 @@ def load_excel_to_table(table_widget, file_name):
 
 
 def remove_row_and_update_excel(table_widget, row, workbook, sheet, file_name, parent=None):
-    # Onay kutusu g�ster
+    # Onay kutusu goster
 
     name = sheet.cell(row=row, column=1).value
     marka = sheet.cell(row=row, column=2).value
@@ -81,7 +86,7 @@ def remove_row_and_update_excel(table_widget, row, workbook, sheet, file_name, p
         sheet.delete_rows(row, 1)
         workbook.save(file_name)
 
-        # Tabloyu g�ncelle
+        # Tabloyu güncelle
         load_excel_to_table(table_widget, file_name)
 
 
@@ -127,6 +132,7 @@ def show_error_message(text):
     msg.setText(text)
     msg.setTextInteractionFlags(Qt.TextSelectableByMouse)
     msg.exec_()
+
 
 
 
